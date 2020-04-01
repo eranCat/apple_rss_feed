@@ -1,0 +1,2 @@
+rootProject.name='Apple rss feed'
+include ':app'

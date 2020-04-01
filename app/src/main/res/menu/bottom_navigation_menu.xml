@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tv"
+        android:icon="@drawable/ic_tv"
+        android:title="TV shows" />
+    <item
+        android:id="@+id/nav_movies"
+        android:icon="@drawable/ic_movies"
+        android:title="Movies" />
+    <item
+        android:id="@+id/nav_music"
+        android:icon="@drawable/ic_library_music"
+        android:title="Music" />
+    <item
+        android:id="@+id/nav_apps"
+        android:icon="@drawable/ic_apps"
+        android:title="Apps" />
+    <item
+        android:id="@+id/nav_pods"
+        android:icon="@drawable/ic_mic"
+        android:title="Podcasts" />
+</menu>
