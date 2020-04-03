@@ -3,10 +3,14 @@ package com.erank.applerssfeed.fragments;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,16 +23,22 @@ import com.erank.applerssfeed.R;
 import com.erank.applerssfeed.models.Data;
 import com.erank.applerssfeed.models.Genre;
 import com.erank.applerssfeed.utils.room.DataSource;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.StringJoiner;
 
+import static com.google.android.material.R.id.design_bottom_sheet;
+
 public class InfoFragment extends BottomSheetDialogFragment {
+
+    private ImageView imageView;
+    private TextView authorTv,dateTv,genreTv,nameTV;
+    private Button openWebBtn;
 
     public static InfoFragment newInstance(String id) {
 
@@ -42,7 +52,6 @@ public class InfoFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_info, container, false);
     }
 
@@ -57,17 +66,38 @@ public class InfoFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         String id = getArguments().getString("id");
-        Data data = DataSource.getData(id);
+        DataSource.getData(id,this::fill);
 
-        if (data == null) return;
+        imageView = view.findViewById(R.id.imageView);
+        authorTv = view.findViewById(R.id.author_tv);
+        dateTv = view.findViewById(R.id.release_date_tv);
+        genreTv = view.findViewById(R.id.genres_tv);
+        nameTV = view.findViewById(R.id.name_tv);
+        openWebBtn = view.findViewById(R.id.open_url_btn);
 
-        ImageView imageView = view.findViewById(R.id.imageView);
-        TextView authorTv = view.findViewById(R.id.author_tv);
-        TextView dateTv = view.findViewById(R.id.release_date_tv);
-        TextView genreTv = view.findViewById(R.id.genres_tv);
-        TextView nameTV = view.findViewById(R.id.name_tv);
+        makeDialogExpanded(view);
+    }
 
-        Glide.with(view)
+    private void makeDialogExpanded( View view) {
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+                if (dialog == null) return;
+
+                FrameLayout bottomSheet = dialog.findViewById(design_bottom_sheet);
+                if (bottomSheet == null) return;
+
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+            }
+        });
+    }
+
+    private void fill(Data data) {
+        Glide.with(this)
                 .load(data.getPhotoUrl())
                 .placeholder(android.R.drawable.ic_menu_report_image)
                 .transform(new RoundedCorners(16))
@@ -89,13 +119,11 @@ public class InfoFragment extends BottomSheetDialogFragment {
             dateTv.setText(format.format(releaseDate));
         }
 
-        view.findViewById(R.id.open_url_btn).setOnClickListener(v -> {
+        openWebBtn.setOnClickListener(v -> {
             Uri parse = Uri.parse(data.getUrl());
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, parse);
             startActivity(browserIntent);
         });
-
     }
-
 
 }

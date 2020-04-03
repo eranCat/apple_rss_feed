@@ -1,6 +1,6 @@
-package com.erank.applerssfeed.utils;
+package com.erank.applerssfeed.models;
 
-public enum Media {
+public enum MediaType {
     MUSIC("itunes-music", "hot-tracks"),
     APPS("ios-apps", "top-grossing"),
     SHOWS("tv-shows", "top-tv-seasons"),
@@ -10,7 +10,7 @@ public enum Media {
     public final String defaultFeedType;
     public final String val;
 
-    Media(String val, String defaultFeedType) {
+    MediaType(String val, String defaultFeedType) {
         this.val = val;
         this.defaultFeedType = defaultFeedType;
     }

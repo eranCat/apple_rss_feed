@@ -2,6 +2,10 @@ package com.erank.applerssfeed.utils;
 
 import android.net.Uri;
 
+import com.erank.applerssfeed.models.ExplicitMode;
+import com.erank.applerssfeed.models.MediaType;
+import com.erank.applerssfeed.models.ResultLimit;
+
 public class RssBuilder {
 
     private static final String BASE = "rss.itunes.apple.com";
@@ -9,13 +13,13 @@ public class RssBuilder {
     private RssBuilder() {
     }
 
-    public static String getUrl(Media media) {
+    public static String getUrl(MediaType mediaType) {
         return new Uri.Builder()
                 .scheme("https").authority(BASE)
                 .appendPath("api").appendPath("v1")
                 .appendPath("us")//Country
-                .appendPath(media.val)
-                .appendPath(media.defaultFeedType)
+                .appendPath(mediaType.val)
+                .appendPath(mediaType.defaultFeedType)
                 .appendPath("all")
                 .appendPath(ResultLimit.ALL.val)
                 .appendPath(ExplicitMode.NO.val)

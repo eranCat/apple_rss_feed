@@ -1,6 +1,6 @@
-package com.erank.applerssfeed.utils;
+package com.erank.applerssfeed.models;
 
-enum ExplicitMode {
+public enum ExplicitMode {
     YES("explicit"),
     NO("non-explicit");
 

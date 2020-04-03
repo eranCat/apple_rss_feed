@@ -1,6 +1,6 @@
-package com.erank.applerssfeed.utils;
+package com.erank.applerssfeed.models;
 
-enum ResultLimit {
+public enum ResultLimit {
     MIN("10"),
     SOME("25"),
     HALF("50"),

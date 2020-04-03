@@ -1,23 +1,20 @@
 package com.erank.applerssfeed.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.erank.applerssfeed.R;
 import com.erank.applerssfeed.fragments.DataListFragment;
-import com.erank.applerssfeed.utils.Filterable;
-import com.erank.applerssfeed.utils.Media;
-import com.erank.applerssfeed.utils.SortType;
-import com.erank.applerssfeed.utils.Sortable;
+import com.erank.applerssfeed.models.MediaType;
+import com.erank.applerssfeed.utils.interfaces.Filterable;
+import com.erank.applerssfeed.models.SortType;
+import com.erank.applerssfeed.utils.interfaces.Sortable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity
     private void filterInFragment(String q) {
         Fragment fragment = getListFragment();
         if (fragment instanceof Filterable) {
-            ((Filterable) fragment).filter(q + "%");
+            ((Filterable) fragment).filter(q);
         }
     }
 
@@ -116,26 +113,26 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_apps:
-                updateFragment(Media.APPS);
+                updateFragment(MediaType.APPS);
                 return true;
             case R.id.nav_tv:
-                updateFragment(Media.SHOWS);
+                updateFragment(MediaType.SHOWS);
                 return true;
             case R.id.nav_movies:
-                updateFragment(Media.MOVIES);
+                updateFragment(MediaType.MOVIES);
                 return true;
             case R.id.nav_music:
-                updateFragment(Media.MUSIC);
+                updateFragment(MediaType.MUSIC);
                 return true;
             case R.id.nav_pods:
-                updateFragment(Media.PODCASTS);
+                updateFragment(MediaType.PODCASTS);
                 return true;
             default:
                 return false;
         }
     }
 
-    private void updateFragment(Media type) {
+    private void updateFragment(MediaType type) {
 
         Fragment fragment = DataListFragment.newInstance(type);
 

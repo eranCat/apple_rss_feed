@@ -13,23 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.erank.applerssfeed.R;
 import com.erank.applerssfeed.models.Data;
+import com.erank.applerssfeed.models.MediaType;
+import com.erank.applerssfeed.models.SortType;
 import com.erank.applerssfeed.utils.DataAdapter;
-import com.erank.applerssfeed.utils.Filterable;
-import com.erank.applerssfeed.utils.Media;
-import com.erank.applerssfeed.utils.SortType;
-import com.erank.applerssfeed.utils.Sortable;
+import com.erank.applerssfeed.utils.interfaces.Filterable;
+import com.erank.applerssfeed.utils.interfaces.OnDataCallback;
+import com.erank.applerssfeed.utils.interfaces.Sortable;
 import com.erank.applerssfeed.utils.room.DataSource;
-
-import java.util.List;
 
 
 public class DataListFragment extends Fragment
-        implements DataAdapter.OnDataCallback , Sortable, Filterable {
+        implements OnDataCallback, Sortable, Filterable {
 
-    private Media media;
+    private MediaType mediaType;
     private DataAdapter adapter;
 
-    public static DataListFragment newInstance(Media type) {
+    public static DataListFragment newInstance(MediaType type) {
 
         Bundle args = new Bundle();
         args.putSerializable("type", type);
@@ -50,11 +49,12 @@ public class DataListFragment extends Fragment
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
 
-        media = (Media) getArguments().getSerializable("type");
-        List<Data> allData = DataSource.getAllData(media);
+        mediaType = (MediaType) getArguments().getSerializable("type");
+        DataSource.getAllData(mediaType, list -> {
+            adapter = new DataAdapter(list, this);
+            recycler.setAdapter(adapter);
+        });
 
-        adapter = new DataAdapter(allData, this);
-        recycler.setAdapter(adapter);
     }
 
 
@@ -69,19 +69,17 @@ public class DataListFragment extends Fragment
 
     @Override
     public void sort(SortType sortType) {
-        List<Data> list = DataSource.getAllData(media, sortType);
-        adapter.setList(list);
+        DataSource.getAllData(mediaType, sortType, adapter::setList);
     }
 
     @Override
     public void filter(String query) {
-        List<Data> list = DataSource.getFiltered(this.media, query);
-        adapter.setList(list);
+        DataSource.getFiltered(mediaType, query, adapter::setList);
     }
 
     @Override
     public void searchCanceled() {
-        List<Data> list = DataSource.getAllData(media);
-        adapter.setList(list);
+        DataSource.getAllData(mediaType, adapter::setList);
     }
+
 }

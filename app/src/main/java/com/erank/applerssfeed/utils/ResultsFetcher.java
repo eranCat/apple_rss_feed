@@ -6,7 +6,9 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.erank.applerssfeed.models.Data;
+import com.erank.applerssfeed.models.MediaType;
 import com.erank.applerssfeed.models.Response;
+import com.erank.applerssfeed.utils.interfaces.DataFetchedCallback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -16,7 +18,7 @@ public class ResultsFetcher {
     private ResultsFetcher() {
     }
 
-    public static void getData(Context context, Media mediaType,
+    public static void getData(Context context, MediaType mediaType,
                                DataFetchedCallback callback) {
 
         StringRequest request = getStringRequest(mediaType, callback);
@@ -24,7 +26,7 @@ public class ResultsFetcher {
         Volley.newRequestQueue(context).add(request);
     }
 
-    private static StringRequest getStringRequest(Media mediaType, DataFetchedCallback callback) {
+    private static StringRequest getStringRequest(MediaType mediaType, DataFetchedCallback callback) {
         String url = RssBuilder.getUrl(mediaType);
         return new StringRequest(Request.Method.GET, url, json -> {
 

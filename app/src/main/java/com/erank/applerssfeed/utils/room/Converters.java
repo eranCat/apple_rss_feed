@@ -3,7 +3,7 @@ package com.erank.applerssfeed.utils.room;
 import androidx.room.TypeConverter;
 
 import com.erank.applerssfeed.models.Genre;
-import com.erank.applerssfeed.utils.Media;
+import com.erank.applerssfeed.models.MediaType;
 import com.google.gson.Gson;
 
 import java.util.Date;
@@ -31,12 +31,12 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String enumToString(Media e) {
+    public static String enumToString(MediaType e) {
         return e.name();
     }
 
     @TypeConverter
-    public static Media stringToEnum(String name) {
-        return Media.valueOf(name);
+    public static MediaType stringToEnum(String name) {
+        return MediaType.valueOf(name);
     }
 }

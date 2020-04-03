@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.erank.applerssfeed.utils.Media;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
@@ -33,13 +32,13 @@ public class Data {
     private Date releaseDate;
 
     private String url;
-    private Media type;
+    private MediaType type;
 
-    public Media getType() {
+    public MediaType getType() {
         return type;
     }
 
-    public void setType(Media type) {
+    public void setType(MediaType type) {
         this.type = type;
     }
 

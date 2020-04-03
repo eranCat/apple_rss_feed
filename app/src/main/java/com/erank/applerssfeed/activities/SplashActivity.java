@@ -4,61 +4,56 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.erank.applerssfeed.R;
 import com.erank.applerssfeed.models.Data;
-import com.erank.applerssfeed.utils.DataFetchedCallback;
-import com.erank.applerssfeed.utils.Media;
+import com.erank.applerssfeed.models.MediaType;
+import com.erank.applerssfeed.utils.interfaces.DataFetchedCallback;
 import com.erank.applerssfeed.utils.room.DataSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SplashActivity extends AppCompatActivity {
+import static com.erank.applerssfeed.utils.ShortStuff.toast;
 
-    private List<Media> medias;
+public class SplashActivity extends AppCompatActivity implements DataFetchedCallback {
+
+    private List<MediaType> mediaTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        medias = new ArrayList<>(Arrays.asList(Media.values()));
-        medias.forEach(this::downloadAndUpdate);
+        mediaTypes = new ArrayList<>(Arrays.asList(MediaType.values()));
+        mediaTypes.forEach(media -> DataSource.getData(this, media, this));
     }
 
-    private void downloadAndUpdate(Media media) {
-        DataSource.getData(this, media, new DataFetchedCallback() {
-            @Override
-            public void onDataFetched(List<Data> list, Media type) {
-                medias.remove(type);
-                checkIfDone();
-            }
+    @Override
+    public void onDataFetched(List<Data> list, MediaType type) {
+        mediaTypes.remove(type);
 
-            @Override
-            public void onErrorFetching(Exception e) {
-                Toast.makeText(SplashActivity.this,
-                        e.getLocalizedMessage(),
-                        Toast.LENGTH_LONG).show();
-                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-                TextView tv = findViewById(R.id.loading_tv);
-                tv.setText("error loading");
-                tv.setTextColor(Color.RED);
-            }
-        });
+        if (mediaTypes.isEmpty()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
     }
 
-    private void checkIfDone() {
+    @Override
+    public void onErrorFetching(Exception e) {
+        toast(this, e.getLocalizedMessage());
 
-        if (!medias.isEmpty())
-            return;
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        TextView tv = findViewById(R.id.loading_tv);
+        tv.setText("error loading");
+        tv.setTextColor(Color.RED);
     }
+
 }

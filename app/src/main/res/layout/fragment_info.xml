@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="bottom"
-    android:background="#FAFAFA"
+    android:background="#D8D8D8"
     android:elevation="8dp"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".fragments.InfoFragment"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    tools:context=".fragments.InfoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:gravity="center">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
             android:elevation="6dp"
             android:src="@drawable/ic_launcher_background" />
 
@@ -55,11 +54,11 @@
                 android:id="@+id/release_date_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-smallcaps"
                 android:textColor="#311B92"
                 android:textSize="16sp"
-                tools:text="date"
-                android:layout_marginBottom="8dp"/>
+                tools:text="date" />
 
             <TextView
                 android:id="@+id/genres_tv"
@@ -78,9 +77,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/round"
+        android:elevation="6dp"
         android:fontFamily="sans-serif-condensed-light"
         android:text="Check on web"
-        android:elevation="6dp"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
