@@ -24,4 +24,8 @@
                 android:title="Genre" />
         </menu>
     </item>
+    <item
+        android:id="@+id/sort_clear"
+        android:title="Clear sort"
+        app:showAsAction="withText" />
 </menu>

@@ -12,7 +12,9 @@ import com.erank.applerssfeed.utils.ResultsFetcher;
 import com.erank.applerssfeed.utils.interfaces.DataFetchedCallback;
 import com.erank.applerssfeed.utils.interfaces.GetDataCallback;
 import com.erank.applerssfeed.utils.interfaces.GetDataListCallback;
-import com.erank.applerssfeed.utils.interfaces.ListGetter;
+import com.erank.applerssfeed.utils.room.tasks.GetFilteredTask;
+import com.erank.applerssfeed.utils.room.tasks.GetListTask;
+import com.erank.applerssfeed.utils.room.tasks.InsertDataTask;
 
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class DataSource {
     private static final DataSource INSTANCE = new DataSource();
     private static final String DB_NAME = "db_apple_data";
 
-    private Dao dao;
+    private DataDao dataDao;
 
     private DataSource() {
     }
@@ -30,8 +32,8 @@ public class DataSource {
                                DataFetchedCallback callback) {
         ResultsFetcher.getData(context, type, new DataFetchedCallback() {
             @Override
-            public void onDataFetched(List<Data> list, MediaType type) {
-                insertTask(list, type, callback);
+            public void onDataFetched(List<Data> list) {
+                insertTask(list, callback);
             }
 
             @Override
@@ -41,41 +43,12 @@ public class DataSource {
         });
     }
 
-    private static void insertTask(List<Data> list, MediaType type, DataFetchedCallback callback) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                getDao().insertDataList(list);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                callback.onDataFetched(list, type);
-            }
-        }.execute();
+    private static void insertTask(List<Data> list, DataFetchedCallback callback) {
+        new InsertDataTask(list, getDao(), callback).execute();
     }
 
-    public static void getAllData(MediaType type, GetDataListCallback callback) {
-        getList(() -> getDao().getAll(type), callback);
-    }
-
-    private static void getList(ListGetter listGetter, GetDataListCallback callback) {
-        new AsyncTask<Void, Void, List<Data>>() {
-            @Override
-            protected List<Data> doInBackground(Void... voids) {
-                return listGetter.getList();
-            }
-
-            @Override
-            protected void onPostExecute(List<Data> list) {
-                callback.onListFetched(list);
-            }
-        }.execute();
-    }
-
-    private static Dao getDao() {
-        return INSTANCE.dao;
+    private static DataDao getDao() {
+        return INSTANCE.dataDao;
     }
 
     public static void getData(String id, GetDataCallback callback) {
@@ -93,36 +66,26 @@ public class DataSource {
     }
 
     public static void init(Context context) {
-        Database database = Room.databaseBuilder(context, Database.class, DB_NAME)
-                .build();
+        Database database =
+                Room.databaseBuilder(context, Database.class, DB_NAME)
+                        .build();
 
-        INSTANCE.dao = database.dao();
+        INSTANCE.dataDao = database.dao();
+    }
+
+    public static void getAllData(MediaType type, GetDataListCallback callback) {
+        getAllData(type,SortType.NONE,callback);
     }
 
     public static void getAllData(MediaType mediaType, SortType sortType,
                                   GetDataListCallback callback) {
-        ListGetter listGetter;
-        switch (sortType) {
-            case NAME:
-                listGetter = () -> getDao().getAllOrderedByName(mediaType);
-                break;
-            case DATE:
-                listGetter = () -> getDao().getAllOrderedByDate(mediaType);
-                break;
-            case GENRE:
-                listGetter = () -> getDao().getAllOrderedByGenre(mediaType);
-                break;
 
-            default:
-                callback.onListFetched(null);
-                return;
-        }
-        getList(listGetter, callback);
+        new GetListTask(mediaType, sortType, getDao(), callback).execute();
     }
 
     public static void getFiltered(MediaType mediaType, String query,
                                    GetDataListCallback callback) {
-        getList(() -> getDao().getFiltered(mediaType, query + "%"), callback);
+        new GetFilteredTask(mediaType,getDao(),query,callback).execute();
     }
 
 }

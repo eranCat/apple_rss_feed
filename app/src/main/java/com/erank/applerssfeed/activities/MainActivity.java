@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.sort_genre:
                 sortFragment(SortType.GENRE);
                 return true;
+            case R.id.sort_clear:
+                sortFragment(SortType.NONE);
+                return true;
         }
 
         return false;

@@ -38,7 +38,7 @@ public class ResultsFetcher {
 
             results.forEach(data -> data.setType(mediaType));
 
-            callback.onDataFetched(results, mediaType);
+            callback.onDataFetched(results);
 
         }, callback::onErrorFetching);
     }

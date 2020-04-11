@@ -10,7 +10,7 @@ import com.erank.applerssfeed.models.MediaType;
 import java.util.List;
 
 @androidx.room.Dao
-public interface Dao {
+public interface DataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDataList(List<Data> list);
@@ -27,7 +27,7 @@ public interface Dao {
     @Query("SELECT * FROM Data WHERE type = :type ORDER BY genres")
     List<Data> getAllOrderedByGenre(MediaType type);
 
-    @Query("SELECT * FROM Data WHERE type = :type AND name LIKE :query")
+    @Query("SELECT * FROM Data WHERE type = :type AND name LIKE '%'+:query+'%'")
     List<Data> getFiltered(MediaType type, String query);
 
     @Query("SELECT * FROM Data WHERE id = :id")
